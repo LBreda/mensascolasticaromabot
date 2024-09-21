@@ -72,10 +72,13 @@ class CallbackHandler
         ]);
 
         \Telegram::answerCallbackQuery(['callback_query_id' => $update->callbackQuery->id]);
+        $user = User::firstWhere(['telegram_id' => $update->callbackQuery->from->id]);
         \Telegram::editMessageText([
             'message_id' => $update->callbackQuery->message->messageId,
             'chat_id' => $update->callbackQuery->message->chat->id,
-            'text' => 'Aggiunta una notifica per il ' . Municipio::find($municipio)->name . ', ' . Grado::find($grado)->name,
+            'text' => 'Aggiunta una notifica per il ' . Municipio::find($municipio)->name . ', ' . Grado::find($grado)->name.
+                      "\n\nLa notifica viene inviata alle {$user->preferred_notification_time}. Se preferisci un orario diverso, puoi cambiarlo con il comando /orario.".
+                      "\n\nIn qualsiasi momento, con i comandi /oggi e /domani, puoi avere il menu del giorno e quello di domani.",
             'reply_markup' => null
         ]);
     }
