@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $telegram_username
@@ -45,6 +45,13 @@ class User extends Authenticatable
     protected $guarded = [
         'id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'preferred_notification_time' => 'datetime:H:i',
+        ];
+    }
 
     public function notification_requests(): HasMany
     {

@@ -37,8 +37,10 @@ class SendNotifications extends Command
                 $this->send($user);
             }
         } else {
-            User::where(['preferred_notification_time' => now()->format('G:i')])
-                ->orWhere(['preferred_notification_time' => now()->format('H:i')])
+            User::where('preferred_notification_time', now()->format('G:i'))
+                ->orWhere('preferred_notification_time', now()->format('G:i:00'))
+                ->orWhere('preferred_notification_time', now()->format('H:i'))
+                ->orWhere('preferred_notification_time', now()->format('H:i:00'))
                 ->each(function (User $user) {
                     $this->send($user);
                 });
