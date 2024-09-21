@@ -77,7 +77,7 @@ class CallbackHandler
             'message_id' => $update->callbackQuery->message->messageId,
             'chat_id' => $update->callbackQuery->message->chat->id,
             'text' => 'Aggiunta una notifica per il ' . Municipio::find($municipio)->name . ', ' . Grado::find($grado)->name.
-                      "\n\nLa notifica viene inviata alle {$user->preferred_notification_time}. Se preferisci un orario diverso, puoi cambiarlo con il comando /orario.".
+                      "\n\nLa notifica viene inviata alle {$user->preferred_notification_time->format('H:i')}. Se preferisci un orario diverso, puoi cambiarlo con il comando /orario.".
                       "\n\nIn qualsiasi momento, con i comandi /oggi e /domani, puoi avere il menu del giorno e quello di domani.",
             'reply_markup' => null
         ]);
