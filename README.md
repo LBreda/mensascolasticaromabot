@@ -14,9 +14,10 @@ composer install
 php artisan key:generate
 ```
 
-Modificate il file .env con i necessari parametri, e registrate il WebHook con:
+Modificate il file .env con i necessari parametri, create il database e registrate il WebHook con:
 
 ```bash
+php artisan migrate --seed
 php artisan msr:initialize
 ```
 
