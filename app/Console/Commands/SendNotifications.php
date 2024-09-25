@@ -55,30 +55,13 @@ class SendNotifications extends Command
     private function send(User $user): void
     {
         $user->notification_requests->each(function (NotificationRequest $nr) use ($user) {
-            // Gets fresh info for the users
-            $userInfo = \Telegram::getChat(['chat_id' => $user->telegram_id])->toArray();
-
-            // Computes the new info array and saves it if different
-            $currentTelegramUserData = count($user->telegram_user_data) ? $user->telegram_user_data : [
-                "id"            => null,
-                "is_bot"        => null,
-                "first_name"    => null,
-                "last_name"     => null,
-                "username"      => null,
-                "language_code" => null,
-                "is_premium"    => null,
-            ];
-            $newTelegramUserData = array_merge($currentTelegramUserData, array_intersect_key($userInfo, $currentTelegramUserData));
-
-            if (json_encode($newTelegramUserData) != json_encode($currentTelegramUserData)) {
-                $user->update(['telegram_user_data' => $newTelegramUserData]);
-            }
+            $user = $user->refreshTelegramInfo();
 
             $menu = Client::getMenu($nr->municipio_id, $nr->grado_id);
             if ($menu) {
                 \Telegram::sendMessage([
                     'chat_id'    => $user->telegram_id,
-                    'text'       => $menu,
+                    'text'       => (($user->telegram_user_data['first_name'] ?? false) ? "Ciao {$user->telegram_user_data['first_name']}!\n\n" : "Ciao!\n\n") . $menu,
                     'parse_mode' => 'HTML'
                 ]);
             }

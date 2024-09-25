@@ -57,4 +57,31 @@ class User extends Authenticatable
     {
         return $this->hasMany(NotificationRequest::class);
     }
+
+    /**
+     * Refreshes Telegram user info
+     */
+    public function refreshTelegramInfo(): User
+    {
+        // Gets fresh info for the users
+        $userInfo = \Telegram::getChat(['chat_id' => $this->telegram_id])->toArray();
+
+        // Computes the new info array and saves it if different
+        $currentTelegramUserData = count($this->telegram_user_data) ? $this->telegram_user_data : [
+            "id"            => null,
+            "is_bot"        => null,
+            "first_name"    => null,
+            "last_name"     => null,
+            "username"      => null,
+            "language_code" => null,
+            "is_premium"    => null,
+        ];
+        $newTelegramUserData = array_merge($currentTelegramUserData, array_intersect_key($userInfo, $currentTelegramUserData));
+
+        if (json_encode($newTelegramUserData) != json_encode($currentTelegramUserData)) {
+            $this->update(['telegram_user_data' => $newTelegramUserData]);
+        }
+
+        return $this;
+    }
 }

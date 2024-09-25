@@ -34,8 +34,6 @@ class Client
         }
 
         return count($response)? <<<EOF
-                  Ciao!
-
                   Il menu del $prettyDate nel $nomeMunicipio, $nomeGrado è:
 
                   $prettyMenu
