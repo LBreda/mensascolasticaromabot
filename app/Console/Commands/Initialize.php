@@ -27,5 +27,29 @@ class Initialize extends Command
     public function handle(): void
     {
         Telegram::setWebhook(['url' => config('telegram.bots.MensaScolasticaRoma.webhook_url')]);
+        Telegram::setMyCommands([
+            'commands' => [
+                [
+                    'command'     => 'oggi',
+                    'description' => 'Mostra il menu di oggi',
+                ],
+                [
+                    'command'     => 'domani',
+                    'description' => 'Mostra il menu di domani',
+                ],
+                [
+                    'command'     => 'aggiungi',
+                    'description' => 'Aggiunge una nuova notifica',
+                ],
+                [
+                    'command'     => 'rimuovi',
+                    'description' => 'Rimuove una notifica',
+                ],
+                [
+                    'command'     => 'orario',
+                    'description' => 'Cambia l\'orario di notifica',
+                ],
+            ]
+        ]);
     }
 }
