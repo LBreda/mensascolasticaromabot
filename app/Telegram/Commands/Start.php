@@ -21,7 +21,7 @@ class Start extends Command
         ],
         [
             'telegram_id' => $this->getUpdate()->message->from->id,
-            'telegram_username' => $this->getUpdate()->message->from->username,
+            'telegram_user_data' => $this->getUpdate()->message->from->toArray(),
             'preferred_notification_time' => '7:00',
         ]);
         $this->replyWithMessage([

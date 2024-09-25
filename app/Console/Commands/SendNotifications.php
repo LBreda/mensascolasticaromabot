@@ -14,7 +14,7 @@ class SendNotifications extends Command
      *
      * @var string
      */
-    protected $signature = 'msr:send-notifications {telegram_id? : Telegram id of the user}';
+    protected $signature = 'msr:send-notifications {user_id? : User id of the user}';
 
     /**
      * The console command description.
@@ -29,10 +29,10 @@ class SendNotifications extends Command
      */
     public function handle(): void
     {
-        $telegram_id = $this->argument('telegram_id');
+        $user_id = $this->argument('user_id');
 
-        if ($telegram_id) {
-            $user = User::firstWhere('telegram_id', $telegram_id);
+        if ($user_id) {
+            $user = User::find($user_id);
             if ($user) {
                 $this->send($user);
             }
@@ -55,6 +55,25 @@ class SendNotifications extends Command
     private function send(User $user): void
     {
         $user->notification_requests->each(function (NotificationRequest $nr) use ($user) {
+            // Gets fresh info for the users
+            $userInfo = \Telegram::getChat(['chat_id' => $user->telegram_id])->toArray();
+
+            // Computes the new info array and saves it if different
+            $currentTelegramUserData = count($user->telegram_user_data) ? $user->telegram_user_data : [
+                "id"            => null,
+                "is_bot"        => null,
+                "first_name"    => null,
+                "last_name"     => null,
+                "username"      => null,
+                "language_code" => null,
+                "is_premium"    => null,
+            ];
+            $newTelegramUserData = array_merge($currentTelegramUserData, array_intersect_key($userInfo, $currentTelegramUserData));
+
+            if (json_encode($newTelegramUserData) != json_encode($currentTelegramUserData)) {
+                $user->update(['telegram_user_data' => $newTelegramUserData]);
+            }
+
             $menu = Client::getMenu($nr->municipio_id, $nr->grado_id);
             if ($menu) {
                 \Telegram::sendMessage([

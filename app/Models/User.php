@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
  *
  *
  * @property int $id
- * @property string|null $telegram_username
+ * @property array $telegram_user_data
  * @property string $telegram_id
  * @property string $preferred_notification_time
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -49,6 +49,7 @@ class User extends Authenticatable
     {
         return [
             'preferred_notification_time' => 'datetime:H:i',
+            'telegram_user_data' => 'array',
         ];
     }
 

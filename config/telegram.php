@@ -1,7 +1,5 @@
 <?php
 
-use Telegram\Bot\Commands\HelpCommand;
-
 return [
     'bots' => [
         'MensaScolasticaRoma' => [
@@ -104,7 +102,7 @@ return [
     |
     */
     'commands' => [
-        HelpCommand::class,
+        \App\Console\Commands\Help::class,
     ],
 
     /*
