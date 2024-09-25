@@ -21,8 +21,6 @@ class CallbackHandler
         // Saves the command and the payload
         list($command, $payload) = explode('|', $update->callbackQuery->data);
 
-        \Log::debug($payload);
-
         // For each command calls the right method
         switch ($command) {
             case 'add_notification':
@@ -30,6 +28,9 @@ class CallbackHandler
                 break;
             case 'remove_notification':
                 self::remove_notification($update, $payload);
+                break;
+            case 'stop':
+                self::stop_bot($update, $payload);
                 break;
             default:
                 // Answers the query to avoid leaving the user without feedback
@@ -83,7 +84,7 @@ class CallbackHandler
         ]);
     }
 
-    private static function remove_notification(Update $update, string|int $notification_request_id)
+    private static function remove_notification(Update $update, string|int $notification_request_id): void
     {
         $user = User::firstWhere(['telegram_id' => $update->callbackQuery->from->id]);
         $notification_request = NotificationRequest::find((int) $notification_request_id);
@@ -104,6 +105,31 @@ class CallbackHandler
                 'message_id' => $update->callbackQuery->message->messageId,
                 'chat_id' => $update->callbackQuery->message->chat->id,
                 'text' => "La notifica non esiste e non è quindi possibile rimuoverla.",
+                'reply_markup' => null
+            ]);
+        }
+    }
+
+    private static function stop_bot(Update $update, string $payload): void
+    {
+        $user = User::firstWhere(['telegram_id' => $update->callbackQuery->from->id]);
+
+        if($user and $payload == 'y') {
+            $user->notification_requests()->delete();
+            $user->delete();
+            \Telegram::answerCallbackQuery(['callback_query_id' => $update->callbackQuery->id]);
+            \Telegram::editMessageText([
+                'message_id' => $update->callbackQuery->message->messageId,
+                'chat_id' => $update->callbackQuery->message->chat->id,
+                'text' => "L'iscrizione al bot è stata cancellata e i tuoi dati sono stati eliminati dal sistema.",
+                'reply_markup' => null
+            ]);
+        } else {
+            \Telegram::answerCallbackQuery(['callback_query_id' => $update->callbackQuery->id]);
+            \Telegram::editMessageText([
+                'message_id' => $update->callbackQuery->message->messageId,
+                'chat_id' => $update->callbackQuery->message->chat->id,
+                'text' => "Il comando è stato annullato.",
                 'reply_markup' => null
             ]);
         }

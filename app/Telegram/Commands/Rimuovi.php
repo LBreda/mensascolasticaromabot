@@ -21,8 +21,13 @@ class Rimuovi extends Command
      */
     public function handle(): void
     {
-        // Prepares a list of the current user notifications
         $user = User::firstWhere('telegram_id', $this->getUpdate()->message->from->id);
+        if(!$user) {
+            $this->replyWithMessage(['text' => "La tua utenza non è presente. Usa il comando /start per iniziare a usare il bot."]);
+            return;
+        }
+
+        // Prepares a list of the current user notifications
         $notification_requests = $user->notification_requests;
 
         if($notification_requests->count()) {

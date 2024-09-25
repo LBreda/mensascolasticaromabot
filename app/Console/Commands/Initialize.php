@@ -49,6 +49,10 @@ class Initialize extends Command
                     'command'     => 'orario',
                     'description' => 'Cambia l\'orario di notifica',
                 ],
+                [
+                    'command'     => 'stop',
+                    'description' => 'Ferma il bot e cancella i dati',
+                ],
             ]
         ]);
     }

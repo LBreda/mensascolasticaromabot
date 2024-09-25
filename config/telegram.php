@@ -17,6 +17,7 @@ return [
                 \App\Telegram\Commands\Oggi::class,
                 \App\Telegram\Commands\Domani::class,
                 \App\Telegram\Commands\Orario::class,
+                \App\Telegram\Commands\Stop::class,
             ],
         ],
     ],
