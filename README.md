@@ -21,4 +21,10 @@ php artisan migrate --seed
 php artisan msr:initialize
 ```
 
+Per inviare le notifiche va aggiunta nel cron (da eseguire ogni minuto) l'esecuzione del comando:
+
+```bash
+php artisan schedule:run
+```
+
 Enjoy!
