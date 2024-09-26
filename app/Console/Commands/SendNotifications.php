@@ -54,9 +54,9 @@ class SendNotifications extends Command
      */
     private function send(User $user): void
     {
-        $user->notification_requests->each(function (NotificationRequest $nr) use ($user) {
-            $user = $user->refreshTelegramInfo();
+        $user = $user->refreshTelegramInfo();
 
+        $user->notification_requests->each(function (NotificationRequest $nr) use ($user) {
             $menu = Client::getMenu($nr->municipio_id, $nr->grado_id);
             if ($menu) {
                 \Telegram::sendMessage([
